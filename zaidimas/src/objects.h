@@ -5,11 +5,10 @@
 
 struct Player
 {
-	float LegsStartX() { return x + 24; }
+	float x, y;
+};
 
-	float LegsEndX() { return x + 64; }
-
-	float LegsY() { return y + 73; }
-
+struct Map
+{
 	float x, y;
 };
