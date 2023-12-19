@@ -13,7 +13,7 @@
 using namespace sf;
 using namespace std;
 
-void GameOverMenu(RenderWindow& app, Event& e, Text& text ,vector<int> coinVec, int coinsBalance) {
+void GameOverMenu(RenderWindow& app, Event& e, Text& text, vector<int>& coinVec, int coinsBalance) {
 	bool menuState = 1;
 	while (menuState) {
 		Texture tMenu;
@@ -28,10 +28,11 @@ void GameOverMenu(RenderWindow& app, Event& e, Text& text ,vector<int> coinVec, 
 			}
 		}
 		text.setPosition(WINDOW_WIDTH / 2 - 300, 300);
+
 		sort(coinVec.begin(), coinVec.end());
-		string strCoinsInfo = "Total coins: " + to_string((int)coinsBalance) + '\n' + "Max coins: " + to_string((int)coinVec[2]);
+		string strCoinsInfo = "Total coins: " + to_string((int)coinsBalance) + '\n' + "Max coins: " + to_string(coinVec[2]);
 		text.setString(strCoinsInfo);
-		
+
 		app.draw(sprMenu);
 		app.draw(text);
 		app.display();
@@ -109,6 +110,7 @@ int main()
 	float currentFrame = 0;
 	int coinsBalance = 0;
 	vector <int> coinVec(3);
+	int coinIter = 0;
 	bool mushrooomMovementState = 1;
 
 	srand(time(0));
@@ -176,8 +178,10 @@ int main()
 			player.x = 0;						// Kairinio kampo barjeras
 
 		if (playerBounds.intersects(luckyboxBounds)) {
-			coinsBalance += 1 + rand() % 5;		// Luckybox'u logika
-			coinVec.push_back(coinsBalance);
+			int temp = 1 + rand() % 5;		
+			coinsBalance += temp;
+			coinVec[coinIter] = temp;				// Luckybox'u logika
+			coinIter++;
 			luckybox.x += LUCKYBOX_NEW_POSITION;
 		}
 
@@ -197,7 +201,6 @@ int main()
 				mushrooomMovementState = 1;
 		}
 		
-		//GameOverMenu(app, e, text, coinVec, coinsBalance);
 		if (playerBounds.intersects(redMushroomBounds) || playerBounds.intersects(purpleMushroomBounds) || playerBounds.intersects(greenMushroomBounds) || playerBounds.intersects(escapeBounds)) {   // zaidimo pasibaigimas
 			GameOverMenu(app, e, text, coinVec, coinsBalance);
 		}
