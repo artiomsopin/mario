@@ -12,3 +12,8 @@ struct Map
 {
 	float x, y;
 };
+
+struct Luckybox
+{
+	float x, y;
+};
