@@ -18,11 +18,11 @@ int main()
 	RenderWindow app(VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Mario");
 	app.setFramerateLimit(60);
 
-	Texture tPlayer, tBackground, tLuckybox;
-
+	Texture tPlayer, tBackground, tLuckybox, tRedMushroom;
 	tPlayer.loadFromFile("resources/sprite.png");
 	tBackground.loadFromFile("resources/background.png");
 	tLuckybox.loadFromFile("resources/luckybox.png");
+	tRedMushroom.loadFromFile("resources/mushroom.png");
 
 	Font font;
 	font.loadFromFile("resources/arialbd.ttf");
@@ -39,9 +39,9 @@ int main()
 	Sprite sprPlayer(tPlayer);
 	Sprite sprBackground(tBackground);
 	Sprite sprLuckybox(tLuckybox);
+	Sprite sprRedMushroom(tRedMushroom);
 	sprPlayer.setTextureRect(IntRect(0, 0, 70, 70));
 	
-
 	Player player;
 	player.x = 0;
 	player.y = GROUND_LEVEL;
@@ -51,20 +51,26 @@ int main()
 	map.y = 0;
 
 	Luckybox luckybox;
-	luckybox.x = 1120;
+	luckybox.x = LUCKYBOX_FIRST_POSITION;
 	luckybox.y = 655;
 	sprLuckybox.setPosition(luckybox.x, luckybox.y);
 	
+	Mushroom redMushroom;
+	redMushroom.x = LUCKYBOX_FIRST_POSITION;
+	redMushroom.y = GROUND_LEVEL;
+	sprRedMushroom.setPosition(redMushroom.x, redMushroom.y);
 	float currentFrame = 0;
-	float coinsCount = 0;
-
+	int coinsBalance = 0;
+	bool state = 1;
 	srand(time(0));
+
 	while (app.isOpen())
 	{
 		Event e;
 		
 		FloatRect playerBounds = sprPlayer.getGlobalBounds();
-		FloatRect LuckyboxBounds = sprLuckybox.getGlobalBounds();	// Kolizijos
+		FloatRect luckyboxBounds = sprLuckybox.getGlobalBounds();	// Kolizijos
+		FloatRect redMushroomBounds = sprRedMushroom.getGlobalBounds();
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		{
@@ -78,6 +84,7 @@ int main()
 			if (player.x > WINDOW_WIDTH / 2 && map.x < 0) {
 				map.x += 5;
 				luckybox.x += 5;
+				redMushroom.x += 5;
 			}
 		}
 
@@ -95,6 +102,7 @@ int main()
 			if (player.x > WINDOW_WIDTH / 2 && map.x <= MAP_WIDTH - WINDOW_WIDTH / 2) {
 				map.x -= 5;
 				luckybox.x -= 5;
+				redMushroom.x -= 5;
 			}
 		}
 		
@@ -109,9 +117,26 @@ int main()
 		if (player.x <= 0 && map.x >= 0)
 			player.x = 0;			// Kairinio kampo barjeras
 
-		if (playerBounds.intersects(LuckyboxBounds)) {
-			coinsCount += 1 + rand() % 5;		// Luckybox'u logika
-			luckybox.y = 1000;
+		if (playerBounds.intersects(luckyboxBounds)) {
+			coinsBalance += 1 + rand() % 5;		// Luckybox'u logika
+			luckybox.x += 1600;
+		}
+
+		
+		if (state) {
+			redMushroom.x -= 1.5f;
+			if (redMushroom.x <= LUCKYBOX_FIRST_POSITION + map.x - 300) 
+				state = 0;
+		}																		//Grybo judejimas aplink vieno tasko
+		if (!state) {
+			redMushroom.x += 1.5f;
+			if (redMushroom.x > LUCKYBOX_FIRST_POSITION + map.x + 300)
+				state = 1;
+		}
+		
+
+		if (playerBounds.intersects(redMushroomBounds)) {
+			app.close();									// zaidimo pasibaigimas
 		}
 
 		while (app.pollEvent(e))
@@ -119,17 +144,22 @@ int main()
 			if (e.type == Event::Closed)
 				app.close();
 		}
+
 		app.clear();
+
 		sprBackground.setPosition(map.x, map.y);
 		app.draw(sprBackground);
-		
+
 		sprLuckybox.setPosition(luckybox.x, luckybox.y);
 		app.draw(sprLuckybox);
 
+		sprRedMushroom.setPosition(redMushroom.x, redMushroom.y);
+		app.draw(sprRedMushroom);
+
 		sprPlayer.setPosition(player.x, player.y);
-		app.draw(sprPlayer); 
-		
-		string strCoins = "Coins: " + to_string((int)coinsCount);
+		app.draw(sprPlayer);
+ 
+		string strCoins = "Coins: " + to_string((int)coinsBalance);
 		text.setString(strCoins);
 		app.draw(text);
 

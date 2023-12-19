@@ -17,3 +17,8 @@ struct Luckybox
 {
 	float x, y;
 };
+
+struct Mushroom
+{
+	float x, y;
+};
