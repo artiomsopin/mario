@@ -19,13 +19,14 @@ int main()
 	RenderWindow app(VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Mario");
 	app.setFramerateLimit(60);
 
-	Texture tPlayer, tBackground, tLuckybox, tRedMushroom, tPurpleMushroom, tGreenMushroom;
+	Texture tPlayer, tBackground, tLuckybox, tRedMushroom, tPurpleMushroom, tGreenMushroom, tEscape;
 	tPlayer.loadFromFile("resources/sprite.png");
 	tBackground.loadFromFile("resources/background.png");
 	tLuckybox.loadFromFile("resources/luckybox.png");
 	tRedMushroom.loadFromFile("resources/redmushroom.png");
 	tPurpleMushroom.loadFromFile("resources/purplemushroom.png");
 	tGreenMushroom.loadFromFile("resources/greenmushroom.png");
+	tEscape.loadFromFile("resources/escape.png");
 
 	Font font;
 	font.loadFromFile("resources/arialbd.ttf");
@@ -45,6 +46,8 @@ int main()
 	Sprite sprRedMushroom(tRedMushroom);
 	Sprite sprPurpleMushroom(tPurpleMushroom);
 	Sprite sprGreenMushroom(tGreenMushroom);
+	Sprite sprEscape(tEscape);
+
 	sprPlayer.setTextureRect(IntRect(0, 0, 70, 70));
 	
 	Player player;
@@ -73,6 +76,11 @@ int main()
 	greenMushroom.y = GROUND_LEVEL;
 	sprGreenMushroom.setPosition(greenMushroom.x, greenMushroom.y);
 	
+	Escape escape;
+	escape.x = MAP_WIDTH - 150;
+	escape.y = GROUND_LEVEL-100;
+	sprEscape.setPosition(escape.x, escape.y);
+
 	float currentFrame = 0;
 	int coinsBalance = 0;
 	bool mushrooomMovementState = 1;
@@ -87,6 +95,7 @@ int main()
 		FloatRect redMushroomBounds = sprRedMushroom.getGlobalBounds();					// Kolizijos
 		FloatRect purpleMushroomBounds = sprPurpleMushroom.getGlobalBounds();
 		FloatRect greenMushroomBounds = sprGreenMushroom.getGlobalBounds();
+		FloatRect escapeBounds = sprEscape.getGlobalBounds();
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		{
@@ -103,6 +112,7 @@ int main()
 				redMushroom.x += 5;
 				purpleMushroom.x += 5;
 				greenMushroom.x += 5;
+				escape.x += 5;
 			}
 		}
 
@@ -123,6 +133,7 @@ int main()
 				redMushroom.x -= 5;
 				purpleMushroom.x -= 5;
 				greenMushroom.x -= 5;
+				escape.x -= 5;
 			}
 		}
 		
@@ -159,7 +170,7 @@ int main()
 		}
 		
 
-		if (playerBounds.intersects(redMushroomBounds) || playerBounds.intersects(purpleMushroomBounds) || playerBounds.intersects(greenMushroomBounds)) {   // zaidimo pasibaigimas
+		if (playerBounds.intersects(redMushroomBounds) || playerBounds.intersects(purpleMushroomBounds) || playerBounds.intersects(greenMushroomBounds) || playerBounds.intersects(escapeBounds)) {   // zaidimo pasibaigimas
 			app.close();																											
 		}
 
@@ -188,6 +199,9 @@ int main()
 
 		sprPlayer.setPosition(player.x, player.y);
 		app.draw(sprPlayer);
+
+		sprEscape.setPosition(escape.x, escape.y);
+		app.draw(sprEscape);
  
 		string strCoins = "Coins: " + to_string((int)coinsBalance);
 		text.setString(strCoins);

@@ -22,3 +22,8 @@ struct Mushroom
 {
 	float x, y;
 };
+
+struct Escape
+{
+	float x, y;
+};
