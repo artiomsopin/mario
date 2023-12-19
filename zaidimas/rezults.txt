@@ -1,0 +1,2 @@
+Total coins: 5
+Max coins: 5

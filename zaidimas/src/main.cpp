@@ -6,7 +6,6 @@
 
 #include <fstream>
 #include <string>
-#include <iostream>
 #include <algorithm>
 #include <vector>
 
@@ -14,25 +13,25 @@ using namespace sf;
 using namespace std;
 
 void GameOverMenu(RenderWindow& app, Event& e, Text& text, vector<int>& coinVec, int coinsBalance) {
+	ofstream fout("rezults.txt");
 	bool menuState = 1;
 	while (menuState) {
 		Texture tMenu;
 		tMenu.loadFromFile("resources/gameover.png");
 		Sprite sprMenu(tMenu);
 		sprMenu.setPosition(-100, 0);
+		sort(coinVec.begin(), coinVec.end());
+		string strCoinsInfo = "Total coins: " + to_string((int)coinsBalance) + '\n' + "Max coins: " + to_string(coinVec[2]);
 		while (app.pollEvent(e))
 		{
 			if (e.type == Event::Closed || sf::Keyboard::isKeyPressed(sf::Keyboard::Enter) || sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
 				menuState = 0;
 				app.close();
+				fout << strCoinsInfo;
 			}
 		}
 		text.setPosition(WINDOW_WIDTH / 2 - 300, 300);
-
-		sort(coinVec.begin(), coinVec.end());
-		string strCoinsInfo = "Total coins: " + to_string((int)coinsBalance) + '\n' + "Max coins: " + to_string(coinVec[2]);
 		text.setString(strCoinsInfo);
-
 		app.draw(sprMenu);
 		app.draw(text);
 		app.display();
@@ -41,7 +40,6 @@ void GameOverMenu(RenderWindow& app, Event& e, Text& text, vector<int>& coinVec,
 
 int main()
 {
-	ofstream fout("d.txt");
 	RenderWindow app(VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Mario");
 	app.setFramerateLimit(60);
 
