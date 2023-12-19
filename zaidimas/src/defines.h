@@ -6,3 +6,4 @@ const int GROUND_LEVEL = 755; // zemes aukstis
 const int JUMP_HEIGHT = 140; // sokio aukstis
 const int MAP_WIDTH = 4850;
 const int LUCKYBOX_FIRST_POSITION = 1120;
+const int LUCKYBOX_NEW_POSITION = 1600;
