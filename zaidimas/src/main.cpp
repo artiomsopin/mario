@@ -74,36 +74,24 @@ int main()
 
 	sprPlayer.setTextureRect(IntRect(0, 0, 70, 70));
 	
-	Player player;
-	player.x = 0;
-	player.y = GROUND_LEVEL;
+	Player player(FIRST_PLAYER_POSITION, GROUND_LEVEL);
 	
-	Map map;
-	map.x = 0;
-	map.y = 0;
+	Map map(0,0);
 
-	Luckybox luckybox;
-	luckybox.x = LUCKYBOX_FIRST_POSITION;
-	luckybox.y = 655;
-	sprLuckybox.setPosition(luckybox.x, luckybox.y);
+	Luckybox luckybox(LUCKYBOX_FIRST_POSITION, 655);
+	sprLuckybox.setPosition(luckybox.getX(), luckybox.getY());
 	
-	Mushroom redMushroom, purpleMushroom, greenMushroom;
-	redMushroom.x = LUCKYBOX_FIRST_POSITION;
-	redMushroom.y = GROUND_LEVEL;
-	sprRedMushroom.setPosition(redMushroom.x, redMushroom.y);
+	Mushroom redMushroom(LUCKYBOX_FIRST_POSITION, GROUND_LEVEL);
+	sprRedMushroom.setPosition(redMushroom.getX(), redMushroom.getY());
 
-	purpleMushroom.x = LUCKYBOX_FIRST_POSITION + LUCKYBOX_NEW_POSITION;
-	purpleMushroom.y = GROUND_LEVEL;
-	sprPurpleMushroom.setPosition(purpleMushroom.x, purpleMushroom.y);
+	Mushroom purpleMushroom(LUCKYBOX_FIRST_POSITION + LUCKYBOX_NEW_POSITION, GROUND_LEVEL);
+	sprPurpleMushroom.setPosition(purpleMushroom.getX(), purpleMushroom.getY());
 
-	greenMushroom.x = LUCKYBOX_FIRST_POSITION + LUCKYBOX_NEW_POSITION * 2;
-	greenMushroom.y = GROUND_LEVEL;
-	sprGreenMushroom.setPosition(greenMushroom.x, greenMushroom.y);
+	Mushroom greenMushroom(LUCKYBOX_FIRST_POSITION + LUCKYBOX_NEW_POSITION * 2, GROUND_LEVEL);
+	sprGreenMushroom.setPosition(greenMushroom.getX(), greenMushroom.getY());
 	
-	Escape escape;
-	escape.x = MAP_WIDTH - 150;
-	escape.y = GROUND_LEVEL-100;
-	sprEscape.setPosition(escape.x, escape.y);
+	Escape escape(MAP_WIDTH - 150, GROUND_LEVEL - 100);
+	sprEscape.setPosition(escape.getX(), escape.getY());
 
 	float currentFrame = 0;
 	int coinsBalance = 0;
@@ -126,80 +114,84 @@ int main()
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::A))
 		{
-			if (player.x <= WINDOW_WIDTH / 2 || map.x >= 0) 
-			player.x -= 5;
+			if (player.getX() <= WINDOW_WIDTH / 2 || map.getX() >= 0)
+			player.moveByX(-5);
 			currentFrame += 0.12f;
 			if (currentFrame > 9)		
 				currentFrame -= 9;
-			sprPlayer.setTextureRect(IntRect(80 * int(currentFrame)+70, 0, -70, 70)); // Atvirkstine animacija
+			sprPlayer.setTextureRect(IntRect(RECT_LEFT * int(currentFrame) + RECT_WIDTH, RECT_TOP, -RECT_WIDTH, RECT_HEIGHT)); // Atvirkstine animacija
 
-			if (player.x > WINDOW_WIDTH / 2 && map.x < 0) {
-				map.x += 5;
-				luckybox.x += 5;
-				redMushroom.x += 5;
-				purpleMushroom.x += 5;
-				greenMushroom.x += 5;
-				escape.x += 5;
+			if (player.getX() > WINDOW_WIDTH / 2 && map.getX() < 0) {
+				map.moveByX(5);
+				luckybox.moveByX(5);
+				redMushroom.moveByX(5);
+				purpleMushroom.moveByX(5);
+				greenMushroom.moveByX(5);
+				escape.moveByX(5);
 			}
 		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 		{
-			if (player.x <= WINDOW_WIDTH / 2)
-				player.x += 5;
+			if (player.getX() <= WINDOW_WIDTH / 2)
+				player.moveByX(5);
 
 			currentFrame += 0.12f;
 
 			if (currentFrame > 9)
 				currentFrame -= 9;
-			sprPlayer.setTextureRect(IntRect(80 * int(currentFrame), 0, 70, 70)); // Animacija
+			sprPlayer.setTextureRect(IntRect(RECT_LEFT * int(currentFrame), RECT_TOP, RECT_WIDTH, RECT_HEIGHT)); // Animacija
 
-			if (player.x > WINDOW_WIDTH / 2 && map.x <= MAP_WIDTH - WINDOW_WIDTH / 2) {
-				map.x -= 5;
-				luckybox.x -= 5;
-				redMushroom.x -= 5;
-				purpleMushroom.x -= 5;
-				greenMushroom.x -= 5;
-				escape.x -= 5;
+			if (player.getX() > WINDOW_WIDTH / 2 && map.getY() <= MAP_WIDTH - WINDOW_WIDTH / 2) {
+				map.moveByX(-5);
+				luckybox.moveByX(-5);
+				redMushroom.moveByX(-5);
+				purpleMushroom.moveByX(-5);
+				greenMushroom.moveByX(-5);
+				escape.moveByX(-5);
 			}
 		}
 		
-		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::W)) && player.y >= GROUND_LEVEL)
+		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Up) || sf::Keyboard::isKeyPressed(sf::Keyboard::Space) || sf::Keyboard::isKeyPressed(sf::Keyboard::W)) && player.getY() >= GROUND_LEVEL)
 		{
-				player.y -= JUMP_HEIGHT;
+				player.moveByY(-JUMP_HEIGHT);
 		}
 
-		if (player.y <= GROUND_LEVEL)
-			player.y += 2;						// Griuvimas
+		if (player.getY() <= GROUND_LEVEL)
+			player.moveByY(2);					// Griuvimas
 		
-		if (player.x <= 0 && map.x >= 0)
-			player.x = 0;						// Kairinio kampo barjeras
+		if ( ((player.getX()) <= 0) && ((map.getX()) >= 0) )
+			player.moveByX(-player.getX());						// Kairinio kampo barjeras
 
 		if (playerBounds.intersects(luckyboxBounds)) {
 			int temp = 1 + rand() % 5;		
 			coinsBalance += temp;
 			coinVec[coinIter] = temp;				// Luckybox'u logika
 			coinIter++;
-			luckybox.x += LUCKYBOX_NEW_POSITION;
+			luckybox.moveByX(LUCKYBOX_NEW_POSITION);
 		}
 
 		
 		if (mushrooomMovementState) {
-			redMushroom.x -= 1.5f;
-			purpleMushroom.x -= 1.5f;
-			greenMushroom.x -= 1.5f;
-			if (redMushroom.x <= LUCKYBOX_FIRST_POSITION + map.x - 300) 
+			redMushroom.moveByX(-1.5f);
+			purpleMushroom.moveByX(-1.5f);
+			greenMushroom.moveByX(-1.5f);
+			if (redMushroom.getX() <= LUCKYBOX_FIRST_POSITION + map.getX() - MUSHROOM_POSITION_BIAS)
 				mushrooomMovementState = 0;
 		}																		//Grybo judejimas aplink vieno tasko
 		if (!mushrooomMovementState) {
-			redMushroom.x += 1.5f;
-			purpleMushroom.x += 1.5f;
-			greenMushroom.x += 1.5f;
-			if (redMushroom.x > LUCKYBOX_FIRST_POSITION + map.x + 300)
+			redMushroom.moveByX(1.5f);
+			purpleMushroom.moveByX(1.5f);
+			greenMushroom.moveByX(1.5f);
+			if (redMushroom.getX() > LUCKYBOX_FIRST_POSITION + map.getX() + MUSHROOM_POSITION_BIAS)
 				mushrooomMovementState = 1;
 		}
 		
-		if (playerBounds.intersects(redMushroomBounds) || playerBounds.intersects(purpleMushroomBounds) || playerBounds.intersects(greenMushroomBounds) || playerBounds.intersects(escapeBounds)) {   // zaidimo pasibaigimas
+		if (playerBounds.intersects(redMushroomBounds) || 
+			playerBounds.intersects(purpleMushroomBounds) || 
+			playerBounds.intersects(greenMushroomBounds) ||      // zaidimo pasibaigimas
+			playerBounds.intersects(escapeBounds) ) 
+		{   
 			GameOverMenu(app, e, text, coinVec, coinsBalance);
 		}
 		
@@ -211,25 +203,25 @@ int main()
 
 		app.clear();
 
-		sprBackground.setPosition(map.x, map.y);
+		sprBackground.setPosition(map.getX(), map.getY());
 		app.draw(sprBackground);
 
-		sprLuckybox.setPosition(luckybox.x, luckybox.y);
+		sprLuckybox.setPosition(luckybox.getX(), luckybox.getY());
 		app.draw(sprLuckybox);
 
-		sprRedMushroom.setPosition(redMushroom.x, redMushroom.y);
+		sprRedMushroom.setPosition(redMushroom.getX(), redMushroom.getY());
 		app.draw(sprRedMushroom);
 
-		sprPurpleMushroom.setPosition(purpleMushroom.x, purpleMushroom.y);
+		sprPurpleMushroom.setPosition(purpleMushroom.getX(), purpleMushroom.getY());
 		app.draw(sprPurpleMushroom);
 
-		sprGreenMushroom.setPosition(greenMushroom.x, greenMushroom.y);
+		sprGreenMushroom.setPosition(greenMushroom.getX(), greenMushroom.getY());
 		app.draw(sprGreenMushroom);
 
-		sprPlayer.setPosition(player.x, player.y);
+		sprPlayer.setPosition(player.getX(), player.getY());
 		app.draw(sprPlayer);
 
-		sprEscape.setPosition(escape.x, escape.y);
+		sprEscape.setPosition(escape.getX(), escape.getY());
 		app.draw(sprEscape);
  
 		string strCoins = "Coins: " + to_string((int)coinsBalance);
