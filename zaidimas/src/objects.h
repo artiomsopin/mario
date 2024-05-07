@@ -2,35 +2,43 @@
 #include "Defines.h"
 
 
-class Player
+class Movement {
+public:
+	virtual void moveByY(float y) = 0;
+
+	virtual void moveByX(float x) = 0;
+
+	virtual float getX() const = 0;
+
+	virtual float getY() const = 0;
+};
+
+class Player : Movement
 {
 private:
 	float x;
 	float y;
 public:
-	Player(float x, float y) :
-		x(x),
-		y(y) {}
+	Player(float x, float y) : x(x), y(y) {}
 
-	void moveByY(float y) {
+	void moveByY(float y) override {
 		this->y += y;
 	};
 
-	void moveByX(float x) {
+	void moveByX(float x) override {
 		this->x += x;
 	}
 
-	float getX() {
+	float getX() const override {
 		return this->x;
 	}
 
-	float getY() {
+	float getY() const override {
 		return this->y;
 	}
-
 };
 
-struct Map
+class Map : Movement
 {
 private:
 	float x;
@@ -40,25 +48,25 @@ public:
 		x(x),
 		y(y) {}
 
-	void moveByY(float y) {
+	void moveByY(float y) override {
 		this->y += y;
 	};
 
-	void moveByX(float x) {
+	void moveByX(float x) override {
 		this->x += x;
 	}
 
-	float getX() {
+	float getX() const override {
 		return this->x;
 	}
 
-	float getY() {
+	float getY() const override {
 		return this->y;
 	}
 
 };
 
-struct Luckybox
+class Luckybox : Movement
 {
 private:
 	float x;
@@ -68,24 +76,24 @@ public:
 		x(x),
 		y(y) {}
 
-	void moveByY(float y) {
+	void moveByY(float y) override {
 		this->y += y;
 	};
 
-	void moveByX(float x) {
+	void moveByX(float x) override {
 		this->x += x;
 	}
 
-	float getX() {
+	float getX() const override {
 		return this->x;
 	}
 
-	float getY() {
+	float getY() const override {
 		return this->y;
 	}
 };
 
-struct Mushroom
+class Mushroom : Movement
 {
 private:
 	float x;
@@ -95,24 +103,24 @@ public:
 		x(x),
 		y(y) {}
 
-	void moveByY(float y) {
+	void moveByY(float y) override {
 		this->y += y;
 	};
 
-	void moveByX(float x) {
+	void moveByX(float x) override {
 		this->x += x;
 	}
 
-	float getX() {
+	float getX() const override {
 		return this->x;
 	}
 
-	float getY() {
+	float getY() const override {
 		return this->y;
 	}
 };
 
-struct Escape
+class Escape : Movement
 {
 private:
 	float x;
@@ -122,19 +130,19 @@ public:
 		x(x),
 		y(y) {}
 
-	void moveByY(float y) {
+	void moveByY(float y) override {
 		this->y += y;
 	};
 
-	void moveByX(float x) {
+	void moveByX(float x) override {
 		this->x += x;
 	}
 
-	float getX() {
+	float getX() const override {
 		return this->x;
 	}
 
-	float getY() {
+	float getY() const override {
 		return this->y;
 	}
 };
