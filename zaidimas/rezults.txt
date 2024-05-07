@@ -1,2 +1,2 @@
-Total coins: 11
-Max coins: 5
+Total coins: 0
+Max coins: 0
