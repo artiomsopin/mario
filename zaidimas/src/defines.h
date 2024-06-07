@@ -29,3 +29,5 @@ const float MUSHROOM_MOVEMENT_SPEED = 1.5f;
 const int FONT_SIZE = 80;
 const int FONT_OUTLINE_THICKNESS = 3;
 const int COIN_MAX_RANDOM_COUNT = 5;
+const int GLOBAL_MOVEMENT_SPEED = 5;
+const int OBJECT_INIT_POSITION = 0;
